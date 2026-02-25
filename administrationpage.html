@@ -1,0 +1,1012 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Nac Creatives</title>
+    <!-- Favicon: nac.png with white background, black and #FF6600 theme -->
+    <link rel="icon" href="
+nac.png" type="image/png">
+    <style>
+        :root {
+            --primary-black: #000000;
+            --dark-gray: #1a1a1a;
+            --medium-gray: #333333;
+            --light-gray: #666666;
+            --white: #FFFFFF;
+            --off-white: #f5f5f5;
+            --accent: #FF6600; /* NAC orange */
+            --accent-dark: #cc5200;
+            --success: #4CAF50;
+            --danger: #f44336;
+            --glass-effect: rgba(255, 255, 255, 0.05);
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); 
+            color: var(--white); 
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-black);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 15px rgba(255,102,0,0.3);
+        }
+        .logo-icon span { color: var(--accent); }
+        
+        h1 { 
+            color: var(--white); 
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        
+        h1 span {
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1em;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 30px;
+            background: var(--dark-gray);
+            border-radius: 12px;
+            padding: 8px;
+            border: 1px solid var(--medium-gray);
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(255, 102, 0, 0.2);
+            color: var(--accent);
+        }
+        
+        .tab-btn.active {
+            background: var(--accent);
+            color: var(--primary-black);
+            box-shadow: 0 2px 10px rgba(255,102,0,0.5);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Upload Form Styles */
+        .admin-card { 
+            background: var(--dark-gray); 
+            padding: 30px; 
+            border-radius: 15px; 
+            border: 1px solid var(--medium-gray);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border-top: 3px solid var(--accent);
+        }
+        
+        h2 { 
+            color: var(--white); 
+            margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            border-bottom: 1px solid var(--medium-gray);
+            padding-bottom: 15px;
+        }
+        h2 i { color: var(--accent); margin-right: 10px; }
+        
+        input, textarea, select, button { 
+            width: 100%; 
+            margin-bottom: 15px; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: none; 
+            outline: none; 
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        input, textarea, select { 
+            background: rgba(0, 0, 0, 0.3); 
+            color: var(--white); 
+            border: 1px solid var(--medium-gray);
+            transition: border 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        select option {
+            background: var(--dark-gray);
+            color: var(--white);
+            padding: 10px;
+        }
+        
+        button { 
+            background: var(--white); 
+            color: var(--primary-black); 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s;
+            font-size: 16px;
+            border: 1px solid var(--white);
+        }
+        
+        button:hover { 
+            background: var(--accent); 
+            color: var(--primary-black);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,102,0,0.4);
+            border-color: var(--accent);
+        }
+        
+        button:disabled {
+            background: var(--light-gray);
+            color: var(--medium-gray);
+            cursor: not-allowed;
+            transform: none;
+            border-color: var(--light-gray);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+            border-color: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+            color: var(--white);
+            border-color: #d32f2f;
+        }
+        
+        .btn-success {
+            background: var(--accent);
+            color: var(--primary-black);
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .btn-success:hover {
+            background: var(--accent-dark);
+            color: var(--white);
+        }
+        
+        #preview { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            display: none; 
+            margin-bottom: 15px; 
+            border: 2px solid var(--accent); 
+            background: rgba(0,0,0,0.2);
+        }
+        
+        #status { 
+            text-align: center; 
+            font-size: 0.9em; 
+            color: var(--white); 
+            min-height: 20px;
+            margin-top: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+        
+        .required::after {
+            content: " *";
+            color: var(--accent);
+        }
+        
+        /* Products Grid Styles */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .product-card {
+            background: var(--dark-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            border: 1px solid var(--medium-gray);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255,102,0,0.2);
+            border-color: var(--accent);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--white);
+        }
+        
+        .product-price {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            background: rgba(255,102,0,0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            border-left: 2px solid var(--accent);
+        }
+        
+        .product-category {
+            display: inline-block;
+            background: rgba(255, 102, 0, 0.2);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+            border: 1px solid var(--accent);
+        }
+        
+        .product-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .product-actions button {
+            flex: 1;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+        
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 102, 0, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--dark-gray);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--medium-gray);
+            border-bottom: 3px solid var(--accent);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1em;
+        }
+        
+        /* No Products Message */
+        .no-products {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--dark-gray);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--medium-gray);
+        }
+        
+        .no-products i {
+            font-size: 3em;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-card {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+        
+        /* Success/Error Messages */
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border-left-color: #4CAF50;
+        }
+        
+        .message.error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border-left-color: #f44336;
+        }
+        
+        .message.info {
+            background: rgba(255, 102, 0, 0.2);
+            color: var(--accent);
+            border-left-color: var(--accent);
+        }
+        
+        /* Back Link */
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255,102,0,0.1);
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            transition: all 0.3s;
+        }
+        
+        .back-link a:hover {
+            background: var(--accent);
+            color: var(--primary-black);
+            text-decoration: none;
+        }
+        
+        /* Category badge accent */
+        .category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            margin: 2px;
+            background: rgba(255,102,0,0.1);
+            border-radius: 20px;
+            font-size: 0.8em;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+    </style>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK (12.9.0) -->
+    <script type="module">
+        // Import the functions you need from the SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
+
+        // Firebase configuration for NAC-Creatives
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIX7qPM4_CJfAgdRdlvm7vlUDax7pL9eQ",
+            authDomain: "nac-creatives.firebaseapp.com",
+            projectId: "nac-creatives",
+            storageBucket: "nac-creatives.firebasestorage.app",
+            messagingSenderId: "513177210662",
+            appId: "1:513177210662:web:27c7071c43d397dd0cfbe7",
+            measurementId: "G-CHB7L99JE0"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        console.log("✅ Firebase initialized for NAC-Creatives");
+    </script>
+</head>
+<body>
+
+<div class="admin-container">
+    <header>
+        <div class="logo-container">
+           <img src="nac.jpg" height="auto" width="90%"></div>
+        </div>
+        <h1 style="font-weight: 900;">NAC <span style="color: white;">CREATIVES</span></h1>
+        <p class="subtitle">Admin Panel - If your not authorized to use this page you may face legal issues act is considered hacking or bypassing it's better you instead ask naccreatives to design your house</p>
+    </header>
+    
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="upload"><i class="fas fa-upload"></i> Upload Product</button>
+        <button class="tab-btn" data-tab="manage"><i class="fas fa-cogs"></i> Manage Products</button>
+        <button class="tab-btn" data-tab="stats"><i class="fas fa-chart-bar"></i> Statistics</button>
+    </div>
+    
+    <!-- Messages Container (for real-time feedback) -->
+    <div id="messages-container"></div>
+    
+    <!-- Upload Tab -->
+    <div id="upload-tab" class="tab-content active">
+        <div class="admin-card">
+            <h2><i class="fas fa-upload"></i> Upload New Creative Product</h2>
+            
+            <div class="form-group">
+                <label for="file-picker" class="required">Product Image</label>
+                <input type="file" id="file-picker" accept="image/*">
+            </div>
+            
+            <img id="preview" src="" alt="Image Preview">
+            
+            <div class="form-group">
+                <label for="item-title" class="required">Product Name</label>
+                <input type="text" id="item-title" placeholder="e.g., Modern Wall Design, Office Branding">
+            </div>
+            
+            <div class="form-group">
+                <label for="item-price" class="required">Price (UGX / USD)</label>
+                <input type="text" id="item-price" placeholder="e.g., 250,000 UGX or $150">
+            </div>
+            
+            <div class="form-group">
+                <label for="item-category" class="required">Category</label>
+                <select id="item-category">
+                    <option value="">-- Select Category --</option>
+                    <option value="Wall Designs">Wall Designs</option>
+                    <option value="Ceiling Design & Installation">Ceiling Design & Installation</option>
+                    <option value="Studio Designing">Studio Designing</option>
+                    <option value="Floor Finishes">Floor Finishes</option>
+                    <option value="Artificial Plants & Landscaping">Artificial Plants & Landscaping</option>
+                    <option value="Lighting, Socketing, and Wiring">Lighting, Socketing, and Wiring</option>
+                    <option value="Commercial Interiors (Salons, Restaurants, Shops, Hotels)">Commercial Interiors (Salons, Restaurants, Shops, Hotels)</option>
+                    <option value="Hospitality & Leisure (Gardens, Bars, Receptions)">Hospitality & Leisure (Gardens, Bars, Receptions)</option>
+                    <option value="Office Space Design">Office Space Design</option>
+                    <option value="Business Branding">Business Branding</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="item-desc">Description</label>
+                <textarea id="item-desc" rows="3" placeholder="Enter details: materials, dimensions, finishes, etc..."></textarea>
+            </div>
+            
+            <button id="submit-btn" class="btn-success">
+                <i class="fas fa-cloud-upload-alt"></i> UPLOAD PRODUCT
+            </button>
+            <p id="status"></p>
+        </div>
+    </div>
+    
+    <!-- Manage Products Tab -->
+    <div id="manage-tab" class="tab-content">
+        <div class="admin-card">
+            <h2><i class="fas fa-cogs"></i> Manage Products</h2>
+            <p>View and manage all uploaded creative products. Click delete to remove.</p>
+            
+            <div id="products-container">
+                <div class="loading" id="loading-products">
+                    <div class="loading-spinner"></div>
+                    <p>Loading products...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Tab -->
+    <div id="stats-tab" class="tab-content">
+        <div class="admin-card">
+            <h2><i class="fas fa-chart-bar"></i> Statistics</h2>
+            
+            <div class="stats-grid" id="stats-container">
+                <div class="loading" id="loading-stats">
+                    <div class="loading-spinner"></div>
+                    <p>Loading statistics...</p>
+                </div>
+            </div>
+            
+            <div id="category-stats"></div>
+        </div>
+    </div>
+    
+    <!-- Back to Gallery Link (placeholder) -->
+    <div class="back-link">
+        <a href="gallery.html"><i class="fas fa-arrow-left"></i> Back to NAC Gallery</a>
+    </div>
+</div>
+
+<script type="module">
+    // ==================== Nac CREATIVES ADMIN PANEL ====================
+    // Import Firebase modules (12.9.0)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { 
+        getFirestore, 
+        collection, 
+        addDoc, 
+        getDocs, 
+        deleteDoc, 
+        doc,
+        query,
+        orderBy 
+    } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+    // ==================== CONFIGURATION ====================
+    // Firebase (NAC-Creatives)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBIX7qPM4_CJfAgdRdlvm7vlUDax7pL9eQ",
+        authDomain: "nac-creatives.firebaseapp.com",
+        projectId: "nac-creatives",
+        storageBucket: "nac-creatives.firebasestorage.app",
+        messagingSenderId: "513177210662",
+        appId: "1:513177210662:web:27c7071c43d397dd0cfbe7",
+        measurementId: "G-CHB7L99JE0"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    console.log("🔥 Firestore ready");
+
+    // Cloudinary (preset changed to anubis9)
+    const CLOUD_NAME = "dopuutcka";
+    const UPLOAD_PRESET = "anubis9";
+
+    // Nac Categories (as provided)
+    const nacCategories = [
+        "Wall Designs",
+        "Ceiling Design & Installation",
+        "Studio Designing",
+        "Floor Finishes",
+        "Artificial Plants & Landscaping",
+        "Lighting, Socketing, and Wiring",
+        "Commercial Interiors (Salons, Restaurants, Shops, Hotels)",
+        "Hospitality & Leisure (Gardens, Bars, Receptions)",
+        "Office Space Design",
+        "Business Branding"
+    ];
+
+    // ==================== DOM ELEMENTS ====================
+    const filePicker = document.getElementById('file-picker');
+    const preview = document.getElementById('preview');
+    const submitBtn = document.getElementById('submit-btn');
+    const statusEl = document.getElementById('status');
+    const productsContainer = document.getElementById('products-container');
+    const statsContainer = document.getElementById('stats-container');
+    const categoryStats = document.getElementById('category-stats');
+    const messagesContainer = document.getElementById('messages-container');
+
+    // ==================== HELPER FUNCTIONS ====================
+    function showMessage(type, text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${text}`;
+        messageDiv.style.display = 'block';
+        messagesContainer.appendChild(messageDiv);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transition = 'opacity 0.5s';
+            setTimeout(() => {
+                if (messageDiv.parentNode) messageDiv.parentNode.removeChild(messageDiv);
+            }, 500);
+        }, 5000);
+    }
+
+    // Preview image
+    filePicker.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+        }
+    });
+
+    // ==================== TAB SWITCHING ====================
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === `${tabId}-tab`) content.classList.add('active');
+            });
+            
+            if (tabId === 'manage') loadProducts();
+            else if (tabId === 'stats') loadStatistics();
+        });
+    });
+
+    // ==================== UPLOAD PRODUCT ====================
+    submitBtn.addEventListener('click', async () => {
+        const file = filePicker.files[0];
+        const title = document.getElementById('item-title').value.trim();
+        const price = document.getElementById('item-price').value.trim();
+        const category = document.getElementById('item-category').value;
+        const desc = document.getElementById('item-desc').value.trim();
+
+        if (!file || !title || !price || !category) {
+            showMessage('error', "Please provide: Product Image, Name, Price, and Category.");
+            return;
+        }
+
+        statusEl.innerText = "📤 Uploading image to Cloudinary...";
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> UPLOADING...';
+
+        try {
+            // 1. Upload to Cloudinary with preset 'anubis9'
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', UPLOAD_PRESET);
+
+            const cloudResponse = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!cloudResponse.ok) throw new Error(`Cloudinary upload failed: ${cloudResponse.status}`);
+            
+            const cloudData = await cloudResponse.json();
+            const imageUrl = cloudData.secure_url;
+            statusEl.innerText = "💾 Saving to Firebase...";
+
+            // 2. Save to Firestore collection "branding_products" (matches rules)
+            const productData = {
+                title: title,
+                description: desc || "Nac Creatives premium work",
+                price: price,
+                category: category,
+                image: imageUrl,
+                createdAt: Date.now(),
+                business: "Nac Creatives",
+                admin_key: "ANUBIS_SECRET_68" // Must match Firebase rule
+            };
+
+            await addDoc(collection(db, "branding_products"), productData);
+
+            showMessage('success', "✅ Product uploaded successfully!");
+            
+            // Reset form
+            document.getElementById('item-title').value = "";
+            document.getElementById('item-price').value = "";
+            document.getElementById('item-category').value = "";
+            document.getElementById('item-desc').value = "";
+            preview.style.display = 'none';
+            filePicker.value = "";
+            statusEl.innerText = "✅ Done!";
+
+            // Switch to manage tab
+            tabBtns[1].click();
+
+        } catch (error) {
+            console.error("Upload error:", error);
+            showMessage('error', "❌ Upload failed: " + error.message);
+            statusEl.innerText = "❌ Error";
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> UPLOAD PRODUCT';
+        }
+    });
+
+    // ==================== LOAD PRODUCTS ====================
+    async function loadProducts() {
+        try {
+            productsContainer.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Loading products...</p></div>`;
+            
+            const q = query(collection(db, "branding_products"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                productsContainer.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-paint-brush"></i>
+                        <h3>No Products Yet</h3>
+                        <p>Upload your first creative product using the "Upload Product" tab.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let productsHTML = '<div class="products-grid">';
+            querySnapshot.forEach((docSnapshot) => {
+                const product = docSnapshot.data();
+                const productId = docSnapshot.id;
+                
+                productsHTML += `
+                    <div class="product-card" data-product-id="${productId}">
+                        <img src="${product.image}" alt="${product.title}" class="product-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMDAwIi8+CjxwYXRoIGQ9Ik01MCA3NUwxMDAgMTI1TDE1MCA3NSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTc1IDUwVjE1MCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz4KPHJlY3QgeD0iNTAiIHk9IjUwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+Cg=='">
+                        <div class="product-info">
+                            <div class="product-title">${product.title}</div>
+                            <div class="product-price">${product.price}</div>
+                            <span class="product-category">${product.category}</span>
+                            <div class="product-description">${product.description || "No description"}</div>
+                            <div class="product-actions">
+                                <button class="btn-danger delete-btn" data-product-id="${productId}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            productsHTML += '</div>';
+            productsContainer.innerHTML = productsHTML;
+
+            // Delete handlers
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const productId = btn.getAttribute('data-product-id');
+                    const productCard = btn.closest('.product-card');
+                    const productName = productCard.querySelector('.product-title').textContent;
+                    
+                    if (confirm(`Delete "${productName}"? This action cannot be undone.`)) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                        
+                        try {
+                            await deleteDoc(doc(db, "branding_products", productId));
+                            
+                            productCard.style.opacity = '0.5';
+                            productCard.style.transform = 'scale(0.95)';
+                            productCard.style.transition = 'all 0.3s';
+                            
+                            setTimeout(() => {
+                                productCard.remove();
+                                showMessage('success', `🗑️ Product "${productName}" deleted.`);
+                                
+                                if (document.querySelectorAll('.product-card').length === 0) {
+                                    productsContainer.innerHTML = `
+                                        <div class="no-products">
+                                            <i class="fas fa-paint-brush"></i>
+                                            <h3>No Products Available</h3>
+                                            <p>All products deleted. Upload new ones.</p>
+                                        </div>
+                                    `;
+                                }
+                                loadStatistics(); // refresh stats
+                            }, 300);
+                            
+                        } catch (error) {
+                            console.error("Delete error:", error);
+                            showMessage('error', "Delete failed: " + error.message);
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                        }
+                    }
+                });
+            });
+            
+        } catch (error) {
+            console.error("Load products error:", error);
+            productsContainer.innerHTML = `<div class="no-products"><i class="fas fa-exclamation-triangle"></i><h3>Error Loading Products</h3><p>${error.message}</p></div>`;
+        }
+    }
+
+    // ==================== LOAD STATISTICS ====================
+    async function loadStatistics() {
+        try {
+            statsContainer.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Loading statistics...</p></div>`;
+            categoryStats.innerHTML = '';
+            
+            const querySnapshot = await getDocs(collection(db, "branding_products"));
+            const totalProducts = querySnapshot.size;
+            
+            // Initialize counters
+            const categoryCount = {};
+            nacCategories.forEach(cat => categoryCount[cat] = 0);
+            let otherCount = 0;
+            
+            querySnapshot.forEach((doc) => {
+                const product = doc.data();
+                const cat = product.category;
+                if (categoryCount.hasOwnProperty(cat)) {
+                    categoryCount[cat]++;
+                } else {
+                    otherCount++;
+                }
+            });
+            
+            // Stats grid
+            const activeCategories = Object.values(categoryCount).filter(v => v > 0).length + (otherCount > 0 ? 1 : 0);
+            const maxInCategory = Math.max(...Object.values(categoryCount), otherCount);
+            
+            statsContainer.innerHTML = `
+                <div class="stat-card"><div class="stat-number">${totalProducts}</div><div class="stat-label">Total Products</div></div>
+                <div class="stat-card"><div class="stat-number">${nacCategories.length}</div><div class="stat-label">Categories</div></div>
+                <div class="stat-card"><div class="stat-number">${activeCategories}</div><div class="stat-label">Active Categories</div></div>
+                <div class="stat-card"><div class="stat-number">${maxInCategory}</div><div class="stat-label">Most in Category</div></div>
+            `;
+            
+            // Category breakdown
+            let catHTML = '<div style="margin-top: 30px;"><h3 style="color: var(--white); margin-bottom: 20px; border-bottom: 1px solid var(--medium-gray); padding-bottom: 10px;">📊 Category Breakdown</h3>';
+            catHTML += '<div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 20px; border: 1px solid var(--medium-gray);">';
+            catHTML += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">';
+            
+            nacCategories.forEach(category => {
+                const count = categoryCount[category] || 0;
+                if (count > 0) {
+                    catHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,102,0,0.05); border-radius: 6px; border: 1px solid var(--accent);">
+                            <span style="color: var(--white);">${category}</span>
+                            <span style="font-weight: bold; color: var(--accent); background: rgba(255,102,0,0.2); padding: 4px 12px; border-radius: 20px;">${count}</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            if (otherCount > 0) {
+                catHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,102,0,0.05); border-radius: 6px; border: 1px solid var(--accent);">
+                        <span style="color: var(--white);">Other (uncategorized)</span>
+                        <span style="font-weight: bold; color: var(--accent); background: rgba(255,102,0,0.2); padding: 4px 12px; border-radius: 20px;">${otherCount}</span>
+                    </div>
+                `;
+            }
+            
+            catHTML += '</div></div></div>';
+            categoryStats.innerHTML = catHTML;
+            
+        } catch (error) {
+            console.error("Load statistics error:", error);
+            statsContainer.innerHTML = `<div class="no-products"><i class="fas fa-exclamation-triangle"></i><h3>Error Loading Statistics</h3><p>${error.message}</p></div>`;
+        }
+    }
+
+    // ==================== INIT ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProducts();
+        loadStatistics();
+        console.log("🚀 Nac Creatives Admin Panel Ready");
+    });
+
+    // Expose for debugging (optional)
+    window.adminPanel = { loadProducts, loadStatistics, db };
+</script>
+<!-- Final status: all modifications applied. Firestore collection: branding_products, Cloudinary preset: anubis9, Categories updated, Firebase config updated, theme black/#FF6600. -->
+</body>
+</html>
